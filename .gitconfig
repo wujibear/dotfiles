@@ -1,0 +1,115 @@
+[init]
+  defaultBranch = main
+
+        # set your user tokens as enivornment variables, such as ~/.secrets
+# See the README for examples.
+[color]
+  ui = true
+
+[color "branch"]
+  current = yellow reverse
+  local = yellow
+  remote = green
+
+[color "diff"]
+  meta = yellow bold
+  frag = magenta bold
+  old = red
+  new = green
+
+[credential]
+  helper = osxkeychain
+
+[alias]
+  # Utilities
+  current = rev-parse --abbrev-ref HEAD # prints your current branch name
+  user-key = "!f() { git config --get user.$1; }; f" # Fetches a value from your .gitconfig.user values
+  mine = ! git log --author="$(git user-key name)" # show my commits
+
+  # Faves
+  reset-master = !git co master && git fetch origin master && git reset --hard origin/master # checks out master and resets it to latest
+  reset-dev = !git co dev && git fetch origin dev && git reset --hard origin/dev # checks out dev and resets it to latest
+  reset-develop = !git co develop && git fetch origin develop && git reset --hard origin/develop # checks out develop and resets it to latest
+  reset-alpha = !git co alpha-dev && git fetch origin alpha-dev && git reset --hard origin/alpha-dev # checks out alpha-dev and resets it to latest
+  reset-this = "!f() { branch=$(git current); git fetch origin $branch; git reset --hard origin/$branch; }; f"
+  rebase-master = !git fetch origin master && git rebase origin/master 
+  rebase-this = "!f() { branch=$(git current); git fetch origin $branch; git rebase origin/$branch; }; f"
+  rebase-dev = !git fetch origin dev && git rebase origin/dev
+  rebase-alpha = !git fetch origin alpha-dev && git rebase origin/alpha-dev
+  kill = "!f() { branch=$(git current); git reset-master; git b -D $branch; }; f" # kill the current branch and reset to latest dev
+  kill-to-base = "!f() { branch=$(git current); git reset-base; git b -D $branch; }; f" # kill the current branch and reset to latest base branch
+  uncommit = reset --soft HEAD^     # remove the last commit, but keep the changes staged
+  stuff = commit --amend -C HEAD    # Pushes your currently added changes into the previous commit
+
+  update = !git fetch origin dev && git rebase origin/dev # rebases your current branch on the latest dev
+  master-update = !git fetch origin master && git rebase origin/master # rebases your current branch on the latest master
+  force-up = !git push origin $(git current) -f # forces your current branch up to origin
+  push-up = !git push origin $(git current) # pushes up your current branch to origin
+
+  # basics
+  b = branch -v                     # branch (verbose)
+  c = commit -m                     # commit with message
+  ca = commit -am                   # commit all with message
+  amend = commit --amend            # ammend your last commit
+  co = checkout                     # checkout
+  nb = checkout -b                  # create and switch to a new branch (mnemonic: "git new branch branchname...")
+  cp = cherry-pick -x               # grab a change from a branch
+  r = remote -v                     # show remotes (verbose)
+
+[format]
+  pretty = format:%C(blue)%ad%Creset %C(yellow)%h%C(green)%d%Creset %C(cyan bold)%s %C(magenta) [%an]%Creset
+
+[pager]
+  branch = false
+
+[mergetool]
+  prompt = false
+
+[mergetool "vimdiff"]
+  cmd="vim -c 'Gdiff' $MERGED"     # use fugitive.vim for 3-way merge
+  keepbackup=false
+
+[merge]
+  summary = true
+  verbosity = 1
+  tool = mvimdiff
+
+[apply]
+  whitespace = nowarn
+
+[branch]
+  autosetupmerge = true
+
+[push]
+  # 'git push' will push the current branch to its tracking branch
+  # the usual default is to push all branches
+  default = tracking
+
+[core]
+  autocrlf = false
+  editor = vim
+	excludesfile = ~/.gitignore_global
+
+[advice]
+  statusHints = false
+
+[diff]
+  # Git diff will use (i)ndex, (w)ork tree, (c)ommit and (o)bject
+  # instead of a/b/c/d as prefixes for patches
+  mnemonicprefix = true
+	algorithm = patience
+
+[rerere]
+  # Remember my merges
+  # http://gitfu.wordpress.com/2008/04/20/git-rerere-rereremember-what-you-did-last-time/
+	enabled = true
+	autoupdate = true
+
+[include]
+  path = .gitconfig.user
+
+[filter "lfs"]
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+	clean = git-lfs clean -- %f

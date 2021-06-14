@@ -120,7 +120,8 @@ async function activate(context, handleLocal = true) {
                 if (modeHandler.vimState.historyTracker.currentContentChanges === undefined) {
                     modeHandler.vimState.historyTracker.currentContentChanges = [];
                 }
-                modeHandler.vimState.historyTracker.currentContentChanges = modeHandler.vimState.historyTracker.currentContentChanges.concat(event.contentChanges);
+                modeHandler.vimState.historyTracker.currentContentChanges =
+                    modeHandler.vimState.historyTracker.currentContentChanges.concat(event.contentChanges);
             }
         };
         modeHandlerMap_1.ModeHandlerMap.getAll()

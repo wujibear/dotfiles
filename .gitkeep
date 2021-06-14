@@ -1,0 +1,2 @@
+.llocal/user/*
+!.llocal/core*
